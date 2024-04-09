@@ -1,0 +1,2 @@
+[16-Feb-2023 12:56:19 UTC] PHP Fatal error:  Can't use method return value in write context in /home4/gitdr/una.gitdr.com/routes/api.php on line 40
+[25-Feb-2023 09:49:14 UTC] PHP Fatal error:  Cannot declare class App\Models\Userprofile, because the name is already in use in /home4/gitdr/una.gitdr.com/app/Models/Nurse.php on line 8
