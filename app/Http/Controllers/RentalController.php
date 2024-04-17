@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Rental;
 use App\Models\SuitPiece;
 use Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class RentalController extends Controller
 {
@@ -39,36 +41,78 @@ class RentalController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+        // Validate the form data
         $validator = Validator::make($request->all(), [
-            'customer_name' => 'required|string',
+            'customer_name' => 'required|string|max:255',
             'customer_address' => 'required|string',
-            'phone1' => 'required|string',
-            'phone2' => 'nullable|string',
-            'rental_date' => 'required|date',
+            'phone1' => 'required|string|max:255',
+            'phone2' => 'nullable|string|max:255|different:phone1', // Ensure phone2 is different from phone1
+            'rental_date' => 'required|date|after_or_equal:today', // Ensure rental_date is not in the past
             'return_date' => 'required|date|after_or_equal:rental_date',
             'advanced_amount' => 'required|numeric',
-            'suit_piece_ids' => 'required|array',
-            'suit_piece_ids.*' => 'exists:suit_pieces,id'
+            'suit_pieces' => 'required|array', 
+            'price' => 'required|array', 
+            'total_rent' => 'required|numeric', // Assuming this will be calculated on the server-side
+            'total_amount' => 'required|numeric', // Assuming this will be calculated on the server-side
+            'discount' => 'nullable|numeric',
         ]);
 
+        // Check if validation fails
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        DB::beginTransaction();
+        // Create a new rental instance
+        $rental = new Rental();
+        $rental->customer_name = $request['customer_name'];
+        $rental->customer_address = $request['customer_address'];
+        $rental->phone1 = $request['phone1'];
+        $rental->phone2 = $request['phone2'];
+        $rental->rental_date = $request['rental_date'];
+        $rental->return_date = $request['return_date'];
+        $rental->advanced_amount = $request['advanced_amount'];
+        $rental->total_rent = $request['total_rent'];
+        $rental->total_amount = $request['total_amount'];
+        $rental->discount = $request['discount'];
 
-        $rental = Rental::create([
-            'customer_name' => $request->customer_name,
-            'customer_address' => $request->customer_address,
-            'phone1' => $request->phone1,
-            'phone2' => $request->phone2,
-            'rental_date' => $request->rental_date,
-            'return_date' => $request->return_date,
-            'advanced_amount' => $request->advanced_amount,
-        ]);
+        // Save the rental details
+        $rental->save();
 
-        $rental->suitPieces()->sync($request->suit_piece_ids);
-
-        return redirect()->route('rental.index')->with('success', 'Rental created successfully.');
+        // Attach suit pieces to the rental
+        foreach ($request['suit_pieces'] as $index => $suitPieceId) {
+            $rental->suitPieces()->attach($suitPieceId, ['price' => $request['price'][$index]]);
+        }
+        DB::commit();
+        // Redirect to a success page or return a success response
+        return redirect()->route('rental.index')->with('success', 'Rental details saved successfully.');
+        } catch (\Exception $e) {
+            // Log the exception or handle it appropriately
+            return redirect()->back()->with('error', 'An error occurred while saving the rental details.');
+        }    
     }
 
-    // Other controller methods like show, edit, update, destroy can be added here as needed.
+    public function checkAvailability(Request $request)
+    {
+        // Retrieve input data
+        $suitPieceId = $request->suit_piece_id;
+        $rentalDate = $request->rental_date;
+        $returnDate = $request->return_date;
+
+        // Check suit piece availability
+        $suitPiece = SuitPiece::find($suitPieceId);
+        $isAvailable = $suitPiece->isAvailableForRental($suitPieceId,$rentalDate, $returnDate);
+
+        // Return JSON response
+        return response()->json(['data' => $isAvailable]);
+    }
+
+    public function show(Rental $rental)
+    {
+        // Eager load the suit pieces relation
+        $rental->load('suitPieces');
+
+        return view('rental.show', compact('rental'));
+    }
 }
+

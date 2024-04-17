@@ -36,10 +36,10 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">S.No</th>
-                                <th scope="col">Suite Title</th>
-                                <th scope="col">Suite Size</th>
-                                <th scope="col">Suite Price</th>
-                                <th scope="col">Suite Available</th>
+                                <th scope="col">Item Title</th>
+                                <th scope="col">Item Size</th>
+                                <th scope="col">Item Price</th>
+                                <th scope="col">Item Available</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>

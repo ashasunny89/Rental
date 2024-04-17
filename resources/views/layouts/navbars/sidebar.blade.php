@@ -205,7 +205,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('rental.create') }}" >
+                    <a class="nav-link" href="{{ route('rental.index') }}" >
                         <i class="fa fa-calendar" style="color: #f45f5f;"></i>
                         <span class="nav-link-text" style="color: #f45f5f;">{{ __('Rent') }}</span>
                     </a>

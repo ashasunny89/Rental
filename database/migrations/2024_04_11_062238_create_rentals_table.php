@@ -6,19 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateRentalsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->foreignId('suit_piece_id')->constrained()->onDelete('cascade');
-            $table->date('rental_date');
-            $table->date('return_date');
-            // Add other fields as needed
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('rentals');
