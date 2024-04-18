@@ -114,5 +114,40 @@ class RentalController extends Controller
 
         return view('rental.show', compact('rental'));
     }
+
+    public function edit($id)
+    {
+        $rental = Rental::findOrFail($id);
+        $suitPieces = SuitPiece::where('available', 1)->get();
+        $selectedSuitPieces = $rental->suitPieces()->select('suit_pieces.id')->pluck('suit_pieces.id');
+        
+        return view('rental.edit', compact('rental', 'suitPieces', 'selectedSuitPieces'));
+    }
+    
+    public function update(Request $request, $id)
+{
+    // Validate the form data
+    $validatedData = $request->validate([
+        'customer_name' => 'required|string|max:255',
+        'customer_address' => 'required|string',
+        'phone1' => 'required|string|max:255',
+        'phone2' => 'nullable|string|max:255|different:phone1', // Ensure phone2 is different from phone1
+        'rental_date' => 'required|date|after_or_equal:today', // Ensure rental_date is not in the past
+        'return_date' => 'required|date|after_or_equal:rental_date',
+        'advanced_amount' => 'required|numeric',
+        'suit_pieces' => 'required|array', 
+        'price' => 'required|array', 
+        'total_rent' => 'required|numeric', // Assuming this will be calculated on the server-side
+        'total_amount' => 'required|numeric', // Assuming this will be calculated on the server-side
+        'discount' => 'nullable|numeric',
+    ]);
+
+    // Update the rental details
+    $rental = Rental::findOrFail($id);
+    $rental->update($validatedData);
+
+    // Redirect back to the rental list or a success page
+    return redirect()->route('rental.index')->with('success', 'Rental details updated successfully.');
+}
 }
 

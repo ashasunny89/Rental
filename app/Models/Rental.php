@@ -17,6 +17,7 @@ class Rental extends Model
         'total_rent',
         'total_amount',
         'discount',
+        'status',
     ];
 
     public function suitPieces()

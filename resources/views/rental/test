@@ -29,40 +29,26 @@
         @endif
         <div class="table-responsive">
                         <table class="table align-items-center table-flush">
-                            <tr>                           
-                                <th scope="row">Customer Name</th>
-                                <td>{{ $rental->customer_name }}</td>
-                                <th scope="row">Customer Address</th>
-                                <td>{{ $rental->customer_address }}</td>
-                            </tr>
+                        <thead class="thead-light">
                             <tr>
-                                                     
-                                <th scope="row">Customer phone1</th>
-                                <td>{{ $rental->phone1 }}</td>
-                                <th scope="row">Customer phone2</th>
-                                <td>{{ $rental->phone2 }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Rental Date</th>
-                                <td>{{ $rental->rental_date }}</td>
-                                <th scope="row">Return Date</th>
-                                <td>{{ $rental->return_date }}</td>
-                            </tr>
-
-                            <tr>
-                                <th scope="row">Advance amount</th>
-                                <td>{{ $rental->advanced_amount }}</td>
-                                <th scope="row">Total amount</th>
-                                <td>{{ $rental->total_amount }}</td>
-                            </tr>
-                            <tr>
-                            <th scope="row">Discount </th>
-                                <td>{{ $rental->discount}}</td>
-                                <th scope="row">Balance amount</th>
-                                <td>{{ $rental->total_amount- $rental->advanced_amount}}</td>
+                                <th scope="col">S.No</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Phone 1</th>
+                                <th scope="col">Rental Date</th>
+                                <th scope="col">Return Date</th>
                                
                             </tr>
-                            
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>{{$rental->id }}</td>
+                                <td>{{$rental->customer_name }}</td>
+                                <td>{{$rental->phone1  }}</td>
+                                <td>{{$rental->rental_date  }}</td>
+                                <td>{{$rental->return_date }}</td>
+                            </tr>
+                        </tbody>
                         </table>
             </div>
     </div>

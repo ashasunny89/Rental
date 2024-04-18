@@ -124,7 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::post('/check-availability', [App\Http\Controllers\RentalController::class,'checkAvailability'])->name('checkAvailability');
 
-		// Route::get('/rentals/{rental}', 'RentalController@show')->name('rental.show');
+	
 
 
 
