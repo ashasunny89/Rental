@@ -100,7 +100,7 @@
                 <select name="suit_pieces[]" class="form-control suit_piece" required>
                     @foreach ($suitPieces as $suitPiece)
                         <option value="{{ $suitPiece->id }}" 
-                        {{ $selectedSuitPiece === $suitPiece->id ? 'selected' : '' }}
+                        {{ $selectedSuitPiece->id === $suitPiece->id ? 'selected' : '' }}
                             data-price="{{ $suitPiece->price }}">
                             {{ $suitPiece->name . ' ' . $suitPiece->size }}
                         </option>
@@ -271,9 +271,11 @@
             // Handle "Remove" button click (optional)
             $(document).on("click", ".remove-field", function() {
                 $(this).closest(".col").parent().remove();
+                calculateTotalAmount();
             });
             $(document).on("click", ".remove-suit-piece", function() {
                 $(this).parent().remove(); // Remove the suit piece from the list
+                calculateTotalAmount();
             });
 
 
